@@ -65,13 +65,24 @@ export default function AboutSection() {
     .fromTo('.about__items',
       { opacity: 1 },
       { opacity: 0, delay: 0.75, duration: 0.25 }, 0)
+    // Mission statement lines rise out of their masks, staggered
     .fromTo('.about .mission__text',
       { y: '110%' },
       { y: '0%', delay: 0.25, duration: 0.5, stagger: { amount: 0.5 } }, 0)
-    .to('.mission-slide-1', { yPercent: -100, opacity: 0, delay: 0.8, duration: 0.2 }, 0)
-    .fromTo('.mission-slide-2',
-      { yPercent: 100, opacity: 0 },
-      { yPercent: 0, opacity: 1, delay: 0.8, duration: 0.2 }, 0);
+    // Supporting line fades up, proof chips pop in one by one
+    .fromTo('.mission__support',
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, delay: 0.65, duration: 0.25 }, 0)
+    .fromTo('.mission__chip',
+      { scale: 0.6, opacity: 0 },
+      { scale: 1, opacity: 1, delay: 0.75, duration: 0.2, stagger: 0.08, ease: 'back.out(2)' }, 0);
+
+    // Continuous word roller: VALUE -> PROFIT -> IMPACT -> (loop)
+    const roller = gsap.timeline({ repeat: -1 });
+    [-100, -200, -300].forEach((yp) => {
+      roller.to('.mission__roller-track', { yPercent: yp, duration: 0.55, ease: 'power3.inOut', delay: 1.1 });
+    });
+    roller.set('.mission__roller-track', { yPercent: 0 });
 
   }, { scope: sectionRef });
 
@@ -129,8 +140,8 @@ export default function AboutSection() {
         {/* Subheader Feature Row */}
         <div style={{ marginBottom: '15rem' }}>
           <FeaturesBar 
-            title="PIXEL-PERFECT" 
-            items={['SUPPORT ∞', '/CODE-QUALITY', '//HASSLE-FREE']} 
+            title="MERN STACK" 
+            items={['REST APIS', '/JWT-AUTH', '//CLEAN CODE']} 
           />
         </div>
 
@@ -146,41 +157,41 @@ export default function AboutSection() {
               gap: '1.6rem',
             }}
           >
-            {/* Card 1: Top-Left */}
+            {/* Card 1: Top-Left — MERN training */}
             <a
-              href="https://artydevs.com"
+              href="https://www.linkedin.com/in/shahd-khairy/"
               target="_blank"
               rel="noreferrer"
               className="about__card"
               style={{ ...cardBase, background: 'linear-gradient(180deg, #94bdf7 0%, #b4bdf7 100%)' }}
             >
               <div style={{ fontSize: '10rem', fontWeight: 400, letterSpacing: '-0.04em', lineHeight: 0.9 }}>
-                LEAD
+                MERN
               </div>
               <div>
                 <div style={{ fontSize: 'clamp(2.2rem, 3.2vw, 4.2rem)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '2.5rem' }}>
-                  Projects at ArtyDevs
+                  Full Stack at Digilians · MCIT
                 </div>
                 <div className="btn btn--black" style={{ display: 'inline-flex' }}>
-                  <div className="btn__text link-hover">artydevs.com</div>
+                  <div className="btn__text link-hover">AI-BASED DIPLOMA</div>
                 </div>
               </div>
             </a>
 
-            {/* Card 2: Top-Right */}
+            {/* Card 2: Top-Right — certificates */}
             <div
               className="about__card"
               style={{ ...cardBase, background: 'linear-gradient(180deg, #94bdf7 0%, #b4bdf7 100%)' }}
             >
               <div style={{ fontSize: '10rem', fontWeight: 400, letterSpacing: '-0.04em', lineHeight: 0.9 }}>
-                AWARDS 12+
+                CERTS 3+
               </div>
               <div>
                 <div style={{ fontSize: 'clamp(2.2rem, 3.2vw, 4.2rem)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '2.5rem' }}>
-                  Won with Partners
+                  Certified & Cloud-Ready
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                  {['FWA', 'CSS DESIGN', 'AWWWARDS'].map((badge) => (
+                  {['META FRONT-END', 'AWS CLOUD', 'DEVOPS CI/CD'].map((badge) => (
                     <div key={badge} className="btn btn--black btn--none" style={{ display: 'inline-flex' }}>
                       <div className="btn__text link-hover">{badge}</div>
                     </div>
@@ -189,27 +200,27 @@ export default function AboutSection() {
               </div>
             </div>
 
-            {/* Card 3: Bottom-Left */}
+            {/* Card 3: Bottom-Left — shipped projects */}
             <div
               className="about__card"
               style={{ ...cardBase, background: 'linear-gradient(180deg, #b4bdf7 0%, #d4bdf8 100%)' }}
             >
               <div style={{ fontSize: '10rem', fontWeight: 400, letterSpacing: '-0.04em', lineHeight: 0.9 }}>
-                98%
+                6+
               </div>
               <div>
                 <div style={{ fontSize: 'clamp(2.2rem, 3.2vw, 4.2rem)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '2.5rem' }}>
-                  Upwork Job Success
+                  Full-Stack Projects Built
                 </div>
                 <div className="btn btn--black btn--none" style={{ display: 'inline-flex' }}>
-                  <div className="btn__text link-hover">TOP RATED</div>
+                  <div className="btn__text link-hover">REACT · NODE · MONGODB</div>
                 </div>
               </div>
             </div>
 
-            {/* Card 4: Bottom-Right */}
+            {/* Card 4: Bottom-Right — human card */}
             <a
-              href="https://clutch.co/profile/artydevs"
+              href="https://github.com/hazemelerefey/neuroscope"
               target="_blank"
               rel="noreferrer"
               className="about__card"
@@ -220,10 +231,10 @@ export default function AboutSection() {
               </div>
               <div>
                 <div style={{ fontSize: 'clamp(2.2rem, 3.2vw, 4.2rem)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '2.5rem' }}>
-                  I ♡ Code, Humor & Designers
+                  I ♡ Clean APIs, 3D & Teamwork
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                  {['10+ REVIEWS', 'SATISFIED CUSTOMERS'].map((badge) => (
+                  {['AYAIR 2026', 'NEUROSCOPE'].map((badge) => (
                     <div key={badge} className="btn btn--black" style={{ display: 'inline-flex' }}>
                       <div className="btn__text link-hover">{badge}</div>
                     </div>
@@ -241,40 +252,93 @@ export default function AboutSection() {
             <div className="mission__inner">
               <div style={{ marginBottom: '5rem' }}>
                 <FeaturesBar 
-                  title="2025" 
+                  title="2026" 
                   items={['MY', 'MISSION', 'IS']} 
                   reverse={true}
                 />
               </div>
 
-              {/* Giant Typography Lines */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', flex: 1, justifyContent: 'center' }}>
-                
-                <div style={{ ...missionRow, justifyContent: 'flex-end', color: 'var(--gray)' }}>
-                  <span className="mission__text" style={{ display: 'inline-block' }}>Increase</span>
+              {/* Mission statement — one clear idea: Design in. Profit out. */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', flex: 1, justifyContent: 'center' }}>
+
+                {/* Line 1: DESIGN IN. */}
+                <div style={{ ...missionRow, color: 'var(--gray)' }}>
+                  <span className="mission__text" style={{ display: 'inline-block' }}>Design in.</span>
                 </div>
 
-                <div style={{ ...missionRow, justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <span className="mission__text" style={{ display: 'inline-block', color: 'var(--gray)' }}>Your</span>
-                  <div className="mission__text" style={{ position: 'relative', overflow: 'hidden', height: '1em', color: 'var(--pink)' }}>
-                    <div className="mission-slide-1" style={{ display: 'block' }}>Design Value</div>
-                    <div className="mission-slide-2" style={{ position: 'absolute', top: 0, right: 0, opacity: 0 }}>Design Profit</div>
+                {/* Line 2: [VALUE / PROFIT / IMPACT] OUT. — live roller */}
+                <div style={{ ...missionRow, alignItems: 'baseline', gap: '0.35em' }}>
+                  <span
+                    className="mission__text"
+                    style={{
+                      display: 'inline-block',
+                      overflow: 'hidden',
+                      height: '1em',
+                      color: 'var(--pink)',
+                      verticalAlign: 'bottom',
+                    }}
+                  >
+                    <span className="mission__roller-track" style={{ display: 'flex', flexDirection: 'column' }}>
+                      {['Value', 'Profit', 'Impact', 'Value'].map((w, i) => (
+                        <span key={i} style={{ height: '1em', lineHeight: 1, display: 'block' }}>{w}</span>
+                      ))}
+                    </span>
+                  </span>
+                  <span className="mission__text" style={{ display: 'inline-block', color: 'var(--pink)' }}>out.</span>
+                </div>
+
+                {/* Line 3: THAT'S MY MISSION. */}
+                <div style={{ ...missionRow, color: 'var(--sky)' }}>
+                  <span className="mission__text" style={{ display: 'inline-block' }}>That&apos;s my mission.</span>
+                </div>
+
+                {/* Supporting line + proof chips */}
+                <div
+                  className="mission__support"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    gap: '3rem',
+                    marginTop: '3.5rem',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <p
+                    style={{
+                      maxWidth: '46rem',
+                      fontSize: '1.8rem',
+                      lineHeight: 1.45,
+                      color: 'var(--gray)',
+                      textTransform: 'none',
+                      letterSpacing: 'normal',
+                      fontWeight: 500,
+                      margin: 0,
+                    }}
+                  >
+                    Every pixel you design, engineered to perform — shipped clean,
+                    on time, and built to earn its keep.
+                  </p>
+                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    {['HIGH STANDARD', 'COST-EFFECTIVE', 'HASSLE-FREE'].map((chip) => (
+                      <span
+                        key={chip}
+                        className="mission__chip"
+                        style={{
+                          padding: '1rem 2rem',
+                          borderRadius: '10rem',
+                          border: '1px solid rgba(180, 195, 217, 0.5)',
+                          fontSize: '1.3rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.06em',
+                          color: 'var(--gray)',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {chip}
+                      </span>
+                    ))}
                   </div>
-                </div>
-
-                <div style={{ ...missionRow, justifyContent: 'flex-end', color: 'var(--gray)' }}>
-                  <span className="mission__text" style={{ display: 'inline-block' }}>With</span>
-                </div>
-
-                <div style={missionRow}>
-                  <div className="mission__text" style={{ position: 'relative', overflow: 'hidden', height: '1em', color: 'var(--sky)' }}>
-                    <div className="mission-slide-1" style={{ display: 'block' }}>High Standard</div>
-                    <div className="mission-slide-2" style={{ position: 'absolute', top: 0, left: 0, opacity: 0 }}>Cost Effective</div>
-                  </div>
-                </div>
-
-                <div style={{ ...missionRow, justifyContent: 'flex-end', color: 'var(--gray)' }}>
-                  <span className="mission__text" style={{ display: 'inline-block' }}>Development</span>
                 </div>
               </div>
             </div>

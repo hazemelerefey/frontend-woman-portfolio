@@ -8,9 +8,9 @@ import { useGSAP } from '@gsap/react';
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const links = [
-  { label: 'WhatsApp', href: 'https://wa.me/0000000000' },
-  { label: 'LinkedIn Account', href: 'https://www.linkedin.com/' },
-  { label: 'shahd@frontend-w.com', href: 'mailto:shahd@frontend-w.com' },
+  { label: 'WhatsApp', href: 'https://wa.me/201142657362' },
+  { label: 'LinkedIn Account', href: 'https://www.linkedin.com/in/shahd-khairy/' },
+  { label: 'shahdkhairy2026@gmail.com', href: 'mailto:shahdkhairy2026@gmail.com' },
 ];
 
 export default function LinksBar() {
@@ -56,17 +56,17 @@ export default function LinksBar() {
         }}
       >
         {links.map((link, idx) => (
-          <span key={link.label} style={{ display: 'block', overflow: 'hidden' }}>
+          <span key={link.label} style={{ display: 'block', overflow: 'hidden', maxWidth: '100%' }}>
             <a
               className="links-bar__item"
               href={link.href}
-              target="_blank"
-              rel="noreferrer"
+              target={link.href.startsWith('mailto:') ? undefined : '_blank'}
+              rel={link.href.startsWith('mailto:') ? undefined : 'noreferrer'}
               onMouseEnter={() => setHoveredIdx(idx)}
               onMouseLeave={() => setHoveredIdx(null)}
               style={{
                 display: 'block',
-                fontSize: 'clamp(4rem, 9.5vw, 13.5rem)',
+                fontSize: 'clamp(2.6rem, 9.5vw, 13.5rem)',
                 lineHeight: 1.05,
                 fontWeight: 500,
                 letterSpacing: '-0.03em',
@@ -74,6 +74,7 @@ export default function LinksBar() {
                 textDecoration: 'none',
                 transition: 'color 0.3s ease',
                 fontFamily: 'inherit',
+                wordBreak: 'break-word',
               }}
             >
               {link.label}

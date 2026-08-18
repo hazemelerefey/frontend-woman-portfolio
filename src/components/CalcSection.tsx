@@ -9,8 +9,11 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function CalcSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [rate, setRate] = useState(30);
+  const [rate, setRate] = useState(45);
   const [hours, setHours] = useState(80);
+
+  // Shahd's fixed MENA full-stack rate (USD/hour)
+  const SHAHD_RATE = 20;
 
   useGSAP(() => {
     // Giant headline words rise out of their masks, scrubbed by scroll
@@ -49,9 +52,9 @@ export default function CalcSection() {
     );
   }, { scope: sectionRef });
 
-  // Exact formula matching scraped frontend-w.com script
+  // Real savings math: (what you pay now − Shahd's MENA rate) × hours × 12
   const calculatedSavings = Math.round(
-    Math.max(0, ((1.23 - 0.006 * (rate - 25)) * rate - 25) * hours * 12)
+    Math.max(0, (rate - SHAHD_RATE) * hours * 12)
   );
 
   const wordMask: React.CSSProperties = { display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' };
@@ -74,6 +77,7 @@ export default function CalcSection() {
         <div style={{ marginBottom: '8rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {/* Row 1: Let's ... Turn ... 10,560 */}
           <div 
+            className="calc__hrow"
             style={{ 
               display: 'flex', 
               justifyContent: 'space-between',
@@ -91,6 +95,7 @@ export default function CalcSection() {
 
           {/* Row 2: USD ... Loss ... Into */}
           <div 
+            className="calc__hrow"
             style={{ 
               display: 'flex', 
               justifyContent: 'space-between',
@@ -110,6 +115,7 @@ export default function CalcSection() {
 
           {/* Row 3: Profit ... With */}
           <div 
+            className="calc__hrow"
             style={{ 
               display: 'flex', 
               gap: '6vw',
@@ -126,6 +132,7 @@ export default function CalcSection() {
 
           {/* Row 4: Cost-effective Collab */}
           <div 
+            className="calc__hrow"
             style={{ 
               display: 'flex', 
               justifyContent: 'space-between',
@@ -170,7 +177,7 @@ export default function CalcSection() {
                 RATE IN USD
               </div>
               <div style={{ fontSize: '2rem', fontWeight: 500, lineHeight: 1.25, color: '#e0e0e0' }}>
-                Enter the current rate you’re paying for development
+                The hourly rate you currently pay for full-stack development
               </div>
             </div>
 
@@ -179,8 +186,8 @@ export default function CalcSection() {
               <input
                 type="range"
                 className="calc-range"
-                min="0"
-                max="60"
+                min="15"
+                max="100"
                 value={rate}
                 onChange={(e) => setRate(Number(e.target.value))}
                 style={{
@@ -195,7 +202,7 @@ export default function CalcSection() {
                   {rate}
                 </span>
                 <span style={{ fontSize: '1.8rem', fontWeight: 600, color: 'var(--gray)', textTransform: 'uppercase' }}>
-                  USD
+                  USD/HR
                 </span>
               </div>
             </div>
@@ -228,8 +235,8 @@ export default function CalcSection() {
               <input
                 type="range"
                 className="calc-range"
-                min="0"
-                max="320"
+                min="20"
+                max="240"
                 value={hours}
                 onChange={(e) => setHours(Number(e.target.value))}
                 style={{
@@ -265,23 +272,37 @@ export default function CalcSection() {
           >
             <div>
               <div style={{ fontSize: '1.4rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--gray)', marginBottom: '1.5rem' }}>
-                MISSED OPPORTUNITIES
+                YOUR YEARLY SAVINGS
               </div>
-              <div style={{ fontSize: '2rem', fontWeight: 500, lineHeight: 1.25, color: '#e0e0e0' }}>
-                Your potential yearly loss compared to my rates
+              <div style={{ fontSize: '2rem', fontWeight: 500, lineHeight: 1.25, color: '#e0e0e0', marginBottom: '1.5rem' }}>
+                What you keep every year by switching to my MENA rate
               </div>
+              <span
+                style={{
+                  display: 'inline-block',
+                  padding: '0.8rem 1.8rem',
+                  borderRadius: '10rem',
+                  border: '1px solid rgba(148, 189, 247, 0.4)',
+                  fontSize: '1.3rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.06em',
+                  color: 'var(--sky)',
+                }}
+              >
+                MY RATE — ${SHAHD_RATE}/HR FIXED
+              </span>
             </div>
 
             <div>
               <div style={{ fontSize: '1.4rem', color: 'var(--gray)', marginBottom: '1rem', fontWeight: 500 }}>
-                ${rate} × {hours} × 12 months =
+                (${rate} − ${SHAHD_RATE}) × {hours}h × 12 months =
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 'clamp(4rem, 5vw, 6.8rem)', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em', color: 'var(--white)' }}>
                   ${calculatedSavings.toLocaleString()}
                 </span>
                 <span style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--gray)', textTransform: 'uppercase' }}>
-                  ANNUALY
+                  ANNUALLY
                 </span>
               </div>
             </div>
@@ -328,6 +349,18 @@ export default function CalcSection() {
         @media (max-width: 1023px) {
           .calc-grid {
             grid-template-columns: 1fr !important;
+          }
+          .calc-grid > div {
+            min-height: 28rem !important;
+            padding: 3rem 2.5rem !important;
+          }
+          .calc__hrow {
+            font-size: clamp(2.6rem, 9vw, 4.5rem) !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            flex-wrap: wrap;
+            gap: 1.5rem !important;
+            justify-content: flex-start !important;
           }
         }
       `}</style>

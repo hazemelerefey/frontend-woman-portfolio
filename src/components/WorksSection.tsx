@@ -11,30 +11,30 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 const projects = [
   {
     id: 1,
-    title: "JOIN.MYSTIC",
-    link: 'https://joinmystic.com',
+    title: "NEUROSCOPE",
+    link: 'https://github.com/hazemelerefey/neuroscope',
     video: '/videos/work-video2.mp4',
     bg: '#150c21',
-    tags: ['MYSTIC', 'READINGS'],
-    year: '©2025',
+    tags: ['3D AI BUILDER', 'R3F · ZUSTAND'],
+    year: '©2026',
   },
   {
     id: 2,
-    title: 'ailit.rail',
-    link: 'https://ailit-rail.webflow.io/',
+    title: 'restaurant.os',
+    link: 'https://www.linkedin.com/in/shahd-khairy/',
     video: '/videos/trains.mp4',
     bg: '#e18066',
-    tags: ['SPEED', 'COMFORT'],
-    year: '©2025',
+    tags: ['MERN', 'ORDERING'],
+    year: '©2026',
   },
   {
     id: 3,
-    title: 'toggle.studio',
-    link: 'https://www.toggle-studio.com/',
+    title: 'furnish.store',
+    link: 'https://www.linkedin.com/in/shahd-khairy/',
     video: '/videos/toggle.mp4',
     bg: '#ffffff',
-    tags: ['THINK', 'DIFFERENT'],
-    year: '©2025',
+    tags: ['E-COMMERCE', 'REACT · NODE'],
+    year: '©2026',
   },
 ];
 
@@ -102,10 +102,10 @@ export default function WorksSection() {
     );
 
     // Mouse movement title float
-    const titles = gsap.utils.toArray('.works__title-link');
+    const titles = gsap.utils.toArray<HTMLElement>('.works__title-link');
     const handleMouseMove = (e: MouseEvent) => {
       const progress = (e.clientX / window.innerWidth - 0.5) * 40;
-      titles.forEach((title: any) => {
+      titles.forEach((title) => {
         gsap.to(title, {
           x: progress,
           ease: 'power2.out',
@@ -250,7 +250,7 @@ export default function WorksSection() {
       <div className="works__marquee center-wrap" style={{ position: 'relative', zIndex: 10, backgroundColor: 'var(--black)', padding: '5rem 0', overflow: 'hidden' }}>
         <div className="works__marquee-inner">
           <FeaturesBar 
-            title="©2025" 
+            title="©2026" 
             items={['THINK', 'DIFFERENT', 'STAY HUNGRY']} 
             reverse={true}
           />

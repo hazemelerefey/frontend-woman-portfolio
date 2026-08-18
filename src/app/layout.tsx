@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Frontend Woman - Home",
+  title: "Shahd Khairy — Fullstack Woman",
   description:
-    "I Collab with Design & Branding teams to turn great design into high-quality code with balanced costs. Wordpress & Webflow",
+    "Full Stack Developer (MERN) in Cairo, Egypt. React, Node.js, Express and MongoDB — secure REST APIs, clean architecture, and 3D interfaces with Three.js & GSAP.",
   openGraph: {
     images: ["/images/fav.png"],
   },

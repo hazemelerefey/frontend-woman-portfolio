@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import LogoMark from './LogoMark';
 
 interface HeaderProps {
   onMenuOpen: () => void;
@@ -46,15 +46,8 @@ export default function Header({ onMenuOpen }: HeaderProps) {
           position: 'relative',
         }}
       >
-        <a href="#home" style={{ marginRight: 'auto' }}>
-          <Image
-            src="/images/logo.svg"
-            alt="logo"
-            width={45}
-            height={45}
-            style={{ width: '4.5rem', height: 'auto', filter: isFixed ? 'invert(1)' : 'none' }}
-            priority
-          />
+        <a href="#home" style={{ marginRight: 'auto', textDecoration: 'none' }} aria-label="Shahd Khairy — home">
+          <LogoMark />
         </a>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>

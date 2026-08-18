@@ -61,7 +61,7 @@ export default function Footer() {
           }}
         >
           <span className="split-line">
-            <SplitLetters text="FRONTEND WOMAN" />
+            <SplitLetters text="FULLSTACK WOMAN" />
           </span>
         </h2>
 
@@ -82,13 +82,13 @@ export default function Footer() {
         >
           {/* Left: Email */}
           <a
-            href="mailto:shahd@frontend-w.com"
+            href="mailto:shahdkhairy2026@gmail.com"
             className="wave-link"
             style={{ color: 'var(--gray)' }}
             onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--gray)')}
           >
-            <SplitLetters text="SHAHD@FRONTEND-W.COM" />
+            <SplitLetters text="SHAHDKHAIRY2026@GMAIL.COM" />
           </a>
 
           {/* Center: Nav links */}

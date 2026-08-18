@@ -258,7 +258,7 @@ export default function ContactForm() {
               onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
             >
-              Send a form ↗
+              Send the form ↗
             </button>
           </div>
 

@@ -101,7 +101,7 @@ export default function HeroSection() {
         }}
       />
 
-      {/* Centered Woman Cutout Model */}
+      {/* Centered Woman Cutout Model — layered IN FRONT of the title */}
       <div 
         className="main-screen__image" 
         style={{
@@ -111,13 +111,13 @@ export default function HeroSection() {
           transform: 'translateX(-50%)',
           height: '86vh',
           width: 'auto',
-          zIndex: 2,
+          zIndex: 4,
           pointerEvents: 'none'
         }}
       >
         <Image 
           src="/images/woman2.webp" 
-          alt="Frontend Woman" 
+          alt="Shahd Khairy — Full Stack Developer" 
           width={800} 
           height={1200}
           style={{ height: '100%', width: 'auto', objectFit: 'contain' }}
@@ -138,13 +138,13 @@ export default function HeroSection() {
           width: '100%',
         }}
       >
-        {/* Main Title Group (FRONTEND + Subnav + WOMAN) */}
-        <div style={{ marginTop: '4vh', textAlign: 'center' }}>
+        {/* Main Title Group (FRONTEND + Subnav + WOMAN) — full-bleed backdrop */}
+        <div style={{ marginTop: '4vh', width: '100%' }}>
           {/* Line 1: FRONTEND */}
           <h1 
             className="main-screen__title-line-1" 
             style={{
-              fontSize: 'clamp(5rem, 17.5vw, 24rem)',
+              fontSize: 'clamp(5rem, 18.5vw, 26rem)',
               lineHeight: 0.78,
               letterSpacing: '-0.03em',
               color: 'var(--white)',
@@ -152,9 +152,14 @@ export default function HeroSection() {
               fontWeight: 800,
               textTransform: 'uppercase',
               margin: 0,
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
             }}
           >
-            FRONTEND
+            {'FULLSTACK'.split('').map((c, i) => (
+              <span key={i} style={{ display: 'inline-block' }}>{c}</span>
+            ))}
           </h1>
 
           {/* Inline Navigation Bar between FRONTEND and WOMAN */}
@@ -217,7 +222,7 @@ export default function HeroSection() {
           <h1 
             className="main-screen__title-line-2" 
             style={{
-              fontSize: 'clamp(5rem, 17.5vw, 24rem)',
+              fontSize: 'clamp(5rem, 18.5vw, 26rem)',
               lineHeight: 0.78,
               letterSpacing: '-0.03em',
               color: 'var(--white)',
@@ -225,9 +230,14 @@ export default function HeroSection() {
               fontWeight: 800,
               textTransform: 'uppercase',
               margin: 0,
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
             }}
           >
-            WOMAN
+            {'WOMAN'.split('').map((c, i) => (
+              <span key={i} style={{ display: 'inline-block' }}>{c}</span>
+            ))}
           </h1>
         </div>
 
@@ -249,7 +259,7 @@ export default function HeroSection() {
         >
           {/* Left: Origin */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span>UKRAINE — ORIGIN</span>
+            <span>CAIRO, EGYPT — ORIGIN</span>
           </div>
 
           {/* Center: Position (marquee) */}
@@ -257,8 +267,8 @@ export default function HeroSection() {
             <div className="marquee__track" style={{ fontSize: '1.8rem', lineHeight: 1.1 }}>
               {[0, 1, 2, 3].map((i) => (
                 <span key={i} className="marquee__item">
-                  <span style={{ fontWeight: 600 }}>Webflow &amp; Wordpress</span>
-                  <span style={{ fontWeight: 400, opacity: 0.85 }}>for Designers</span>
+                  <span style={{ fontWeight: 600 }}>React &amp; Node.js</span>
+                  <span style={{ fontWeight: 400, opacity: 0.85 }}>for modern products</span>
                   <span style={{ opacity: 0.4 }}>—</span>
                 </span>
               ))}
@@ -267,8 +277,8 @@ export default function HeroSection() {
 
           {/* Right: Tech stack */}
           <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column' }}>
-            <span>WEBFLOW & WORDPRESS</span>
-            <span style={{ opacity: 0.6 }}>GSAP ANIMATIONS</span>
+            <span>MERN STACK</span>
+            <span style={{ opacity: 0.6 }}>THREE.JS & GSAP</span>
           </div>
         </div>
       </div>
