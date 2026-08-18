@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { RESUME_URL } from '@/lib/resume';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -310,10 +311,11 @@ export default function CalcSection() {
 
         </div>
 
-        {/* Bottom PDF Prices Button */}
+        {/* Bottom résumé download */}
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <button
-            onClick={() => window.dispatchEvent(new Event('open-pdf-modal'))}
+          <a
+            href={RESUME_URL}
+            download
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -328,6 +330,7 @@ export default function CalcSection() {
               textTransform: 'uppercase',
               letterSpacing: '0.02em',
               cursor: 'pointer',
+              textDecoration: 'none',
               transition: 'all 0.25s ease',
             }}
             onMouseEnter={(e) => {
@@ -339,8 +342,8 @@ export default function CalcSection() {
               e.currentTarget.style.color = 'var(--white)';
             }}
           >
-            PDF Prices ↗
-          </button>
+            Download CV ↗
+          </a>
         </div>
 
       </div>

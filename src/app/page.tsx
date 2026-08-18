@@ -12,7 +12,6 @@ import LinksBar from '@/components/LinksBar';
 import Footer from '@/components/Footer';
 import ContactForm from '@/components/ContactForm';
 import MobileMenu from '@/components/MobileMenu';
-import RetroPdfModal from '@/components/RetroPdfModal';
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,7 +20,6 @@ export default function Home() {
     <>
       <Preloader />
       <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-      <RetroPdfModal />
 
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--black)' }}>
         <Header onMenuOpen={() => setMenuOpen(true)} />

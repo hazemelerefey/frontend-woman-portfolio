@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import LogoMark from './LogoMark';
+import { RESUME_URL } from '@/lib/resume';
 
 interface HeaderProps {
   onMenuOpen: () => void;
@@ -52,8 +53,9 @@ export default function Header({ onMenuOpen }: HeaderProps) {
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {/* Desktop buttons */}
-          <button
-            onClick={() => window.dispatchEvent(new Event('open-pdf-modal'))}
+          <a
+            href={RESUME_URL}
+            download
             className="btn btn--outline cursor-hover"
             style={{
               padding: '0.8rem 2.4rem',
@@ -66,11 +68,13 @@ export default function Header({ onMenuOpen }: HeaderProps) {
               letterSpacing: '0.02em',
               background: 'transparent',
               cursor: 'pointer',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
               transition: 'all 0.25s ease',
             }}
           >
-            PDF Prices
-          </button>
+            Resume
+          </a>
           <a
             href="#contact"
             className="btn btn--white header__btn mobile--hide"

@@ -45,11 +45,14 @@ export default function Footer() {
     >
       <div className="center-wrap" style={{ width: '100%' }}>
         
-        {/* Giant Footer Title */}
+        {/* Giant Footer Title — "FULLSTACK WOMAN" is 15 characters on one
+            line, so the type size has to be derived from the string's own
+            width (~9.64em) or it runs past the right edge. 9.6vw keeps it
+            inside the wrap with a little slack at every viewport. */}
         <h2 
           className="simple-title footer-title" 
           style={{ 
-            fontSize: 'clamp(5rem, 15.5vw, 21.5rem)', 
+            fontSize: 'clamp(3.2rem, 9.6vw, 24rem)', 
             lineHeight: 0.85, 
             textAlign: 'center',
             textTransform: 'uppercase',
@@ -140,6 +143,12 @@ export default function Footer() {
 
       <style>{`
         @media (max-width: 1023px) {
+          /* The wrap keeps proportionally more side padding on narrow
+             viewports, so the line needs a slightly smaller step to stay
+             inside it. */
+          #footer .footer-title {
+            font-size: clamp(2.8rem, 8.8vw, 24rem) !important;
+          }
           #footer .center-wrap > div {
             flex-direction: column !important;
             align-items: center !important;
