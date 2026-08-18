@@ -1,139 +1,110 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import TitleReveal from './TitleReveal';
+import { INK } from './LogoMark';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const shahdItems = [
-  'Bugless',
-  'PixelPerfect',
-  'On-time deadlines',
-  'Fixed Price Only',
-  'Free Light Animations',
-  'Better than Figma',
-  'Weekly Updates',
-  'Stable Support',
-  'Fast Replies',
-  'Creativity',
-  'hassle-free',
-];
+const MONO = "'IBM Plex Mono', monospace";
 
-const freelancerItems = [
-  'Full of bugs',
-  'Near Layout',
-  'Deadline shame',
-  'Post-launch costs',
-  'Hovers Not Always',
-  'Worse than Figma',
-  'Strage Silence',
-  'Dev Rotation',
-  'Hours of Silence',
-  'Passivity',
-  'Headaches',
+/**
+ * The standard, line by line. Left column is the commitment, right column is
+ * what it replaces. The contrast is carried entirely by typographic weight and
+ * value — no colour is used to make the point.
+ */
+const ROWS: { claim: string; instead: string }[] = [
+  { claim: 'Ships without bugs', instead: 'Ships and then patches' },
+  { claim: 'Pixel-exact build', instead: '“Close enough” layout' },
+  { claim: 'Deadlines held', instead: 'Deadlines explained' },
+  { claim: 'Fixed price, quoted upfront', instead: 'Invoices after launch' },
+  { claim: 'Motion built in', instead: 'Static handoff' },
+  { claim: 'Written weekly updates', instead: 'Radio silence' },
+  { claim: 'One developer, start to finish', instead: 'Rotating hands' },
+  { claim: 'Answers within hours', instead: 'Answers within days' },
+  { claim: 'Clean, documented code', instead: 'Code nobody can inherit' },
+  { claim: 'Supported after launch', instead: 'Gone at handoff' },
 ];
 
 export default function CompareSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
-  const counterWrapRef = useRef<HTMLDivElement>(null);
-  const counterNumRef = useRef<HTMLSpanElement>(null);
-  const leftListRef = useRef<HTMLDivElement>(null);
-  const rightListRef = useRef<HTMLDivElement>(null);
-  const [negativeHover, setNegativeHover] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+  const markerRef = useRef<HTMLDivElement>(null);
+  const readoutRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(() => {
+    const root = sectionRef.current;
+    const list = listRef.current;
+    if (!root || !list) return;
+
     const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
+    /* The centre spine draws itself in as the section arrives */
+    gsap.fromTo('.ap-spine',
+      { scaleY: 0, transformOrigin: '50% 0%' },
+      {
+        scaleY: 1,
+        ease: 'none',
+        scrollTrigger: { trigger: list, start: 'top 85%', end: 'top 35%', scrub: true },
+      });
+
+    /* Each line activates as it reaches the reading line: the commitment
+       sharpens and leans toward the spine, what it replaces recedes. */
+    gsap.utils.toArray<HTMLElement>('.ap-row').forEach((row) => {
+      const claim = row.querySelector('.ap-claim');
+      const instead = row.querySelector('.ap-instead');
+      const rule = row.querySelector('.ap-rule');
+      const idx = row.querySelector('.ap-idx');
+
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: row,
+          start: 'center bottom-=25%',
+          end: 'center top+=25%',
+          scrub: true,
+        },
+      })
+        .fromTo(claim,
+          { opacity: 0.38, x: 0 },
+          { opacity: 1, x: isDesktop ? 12 : 0, duration: 0.5, ease: 'power2.out' })
+        .to(claim, { opacity: 0.38, x: 0, duration: 0.5, ease: 'power2.in' })
+        .fromTo(instead,
+          { opacity: 0.42, x: 0 },
+          { opacity: 0.24, x: isDesktop ? 14 : 0, duration: 0.5, ease: 'power2.out' }, 0)
+        .to(instead, { opacity: 0.42, x: 0, duration: 0.5, ease: 'power2.in' }, 0.5)
+        .fromTo(rule,
+          { opacity: 0.08 },
+          { opacity: 0.34, duration: 0.5, ease: 'power2.out' }, 0)
+        .to(rule, { opacity: 0.08, duration: 0.5, ease: 'power2.in' }, 0.5)
+        .fromTo(idx, { opacity: 0.3 }, { opacity: 0.85, duration: 0.5 }, 0)
+        .to(idx, { opacity: 0.3, duration: 0.5 }, 0.5);
+    });
+
     if (!isDesktop) return;
 
-    const counterWrap = counterWrapRef.current;
-    const content = contentRef.current;
-    const inner = innerRef.current;
-    if (!counterWrap || !content || !inner) return;
-
-    // === Pinned counter (reference mechanic) ===
-    // offset of the wrap inside the content, pin for the remaining list height
-    const e = counterWrap.getBoundingClientRect().top - content.getBoundingClientRect().top;
-    const n = inner.clientHeight - 2 * e - counterWrap.clientHeight;
-
-    const counterState = { val: 28 };
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: counterWrap,
-        pin: true,
-        start: 'center center',
-        end: '+=' + n + 'px',
-        scrub: 1,
-        pinSpacing: false,
-      },
-    }).to(counterState, {
-      val: 99,
-      duration: 1,
-      onUpdate: () => {
-        if (counterNumRef.current) {
-          counterNumRef.current.textContent = String(Math.round(counterState.val));
+    /* A registration mark rides the spine, and the readout counts the
+       standards actually passed — it is only ever counting these rows. */
+    const marker = markerRef.current;
+    ScrollTrigger.create({
+      trigger: list,
+      start: 'top center',
+      end: 'bottom center',
+      scrub: true,
+      onUpdate: (self) => {
+        const p = self.progress;
+        if (marker) {
+          gsap.set(marker, { y: p * (list.clientHeight - marker.clientHeight) });
+        }
+        if (readoutRef.current) {
+          const n = Math.min(ROWS.length, Math.max(1, Math.ceil(p * ROWS.length)));
+          readoutRef.current.textContent = String(n).padStart(2, '0');
         }
       },
     });
-
-    // === Rows grow as they cross viewport center, then shrink back ===
-    const growRows = (selector: string, origin: string) => {
-      gsap.utils.toArray<HTMLElement>(selector).forEach((row) => {
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: row,
-            start: 'center-=80 center',
-            end: 'center+=170 center',
-            scrub: true,
-          },
-        })
-          .fromTo(row, { scale: 1, transformOrigin: origin }, { scale: 1.28, duration: 0.5 })
-          .to(row, { scale: 1, duration: 0.5 });
-      });
-    };
-    growRows('.compare__item--left', 'right center');
-    growRows('.compare__item--right', 'left center');
-
-    // === Tilt on the two lists (like the reference's vanilla-tilt) ===
-    const setupTilt = (element: HTMLElement | null) => {
-      if (!element) return;
-      const handleMove = (ev: MouseEvent) => {
-        const rect = element.getBoundingClientRect();
-        const x = (ev.clientX - rect.left) / rect.width - 0.5;
-        const y = (ev.clientY - rect.top) / rect.height - 0.5;
-        gsap.to(element, {
-          rotationX: -y * 4,
-          rotationY: x * 4,
-          transformPerspective: 1800,
-          ease: 'power2.out',
-          duration: 0.5,
-        });
-      };
-      const handleLeave = () => {
-        gsap.to(element, { rotationX: 0, rotationY: 0, duration: 0.7, ease: 'power2.out' });
-      };
-      element.addEventListener('mousemove', handleMove);
-      element.addEventListener('mouseleave', handleLeave);
-    };
-    setupTilt(leftListRef.current);
-    setupTilt(rightListRef.current);
   }, { scope: sectionRef });
-
-  const itemBase: React.CSSProperties = {
-    display: 'flex',
-    padding: '2.6rem 0 1.3rem 0',
-    width: '100%',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.2)',
-    fontWeight: 500,
-    fontSize: '3rem',
-    letterSpacing: '-0.03em',
-    lineHeight: 0.91,
-    willChange: 'transform',
-  };
 
   return (
     <section
@@ -142,199 +113,260 @@ export default function CompareSection() {
       className="compare"
       style={{
         backgroundColor: 'var(--black)',
-        paddingTop: '10rem',
-        paddingBottom: '12rem',
+        paddingTop: '9rem',
+        paddingBottom: '11rem',
         position: 'relative',
         zIndex: 2,
       }}
     >
       <div className="center-wrap" style={{ width: '100%' }}>
-        
-        {/* Section Title */}
+
+        {/* Kicker — same registration voice as the loader */}
+        <div
+          className="ap-kicker"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            fontFamily: MONO,
+            fontSize: '1.05rem',
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'rgba(244, 241, 234, 0.42)',
+            paddingBottom: '1.4rem',
+            borderBottom: '1px solid rgba(244, 241, 234, 0.1)',
+          }}
+        >
+          <span>How I work</span>
+          <span>The standard — {String(ROWS.length).padStart(2, '0')} lines</span>
+        </div>
+
         <TitleReveal
           text="Approach"
-          style={{ 
+          style={{
             fontSize: 'clamp(5rem, 16vw, 24rem)',
             lineHeight: 0.82,
             letterSpacing: '-0.03em',
             textTransform: 'uppercase',
             fontWeight: 800,
-            color: 'var(--white)',
-            marginBottom: '1.5rem',
+            color: INK,
+            marginTop: '2.5rem',
+            marginBottom: '3.5rem',
           }}
         />
 
-        {/* Compare content: two lists + pinned counter wrap */}
+        {/* Column headings */}
         <div
-          ref={contentRef}
-          className="compare__content"
+          className="ap-heads"
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            position: 'relative',
-            marginTop: '1.5rem',
+            display: 'grid',
+            gridTemplateColumns: '4.5rem minmax(0, 1fr) 7.5rem minmax(0, 1fr)',
+            alignItems: 'baseline',
+            fontFamily: MONO,
+            fontSize: '1.05rem',
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'rgba(244, 241, 234, 0.5)',
+            paddingBottom: '1.2rem',
           }}
         >
-          <div ref={innerRef} className="compare__inner" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: '0' }}>
-
-            {/* Left list: positive */}
-            <div
-              ref={leftListRef}
-              className="compare__list"
-              style={{
-                width: 'calc(50% - 1.5rem)',
-                padding: '10rem 0',
-                borderRadius: '2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-                background: 'linear-gradient(180deg, #94bdf7 0%, #a8c4f8 100%)',
-                color: '#000',
-                willChange: 'transform',
-              }}
-            >
-              {shahdItems.map((item) => (
-                <div
-                  key={item}
-                  className="compare__item compare__item--left"
-                  style={{
-                    ...itemBase,
-                    justifyContent: 'flex-end',
-                    paddingRight: '17.5rem',
-                  }}
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-
-            {/* Right list: negative */}
-            <div
-              ref={rightListRef}
-              className="compare__list compare__list--negative"
-              onMouseEnter={() => setNegativeHover(true)}
-              onMouseLeave={() => setNegativeHover(false)}
-              style={{
-                width: 'calc(50% - 1.5rem)',
-                padding: '10rem 0',
-                paddingLeft: '20rem',
-                borderRadius: '2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-                background: 'linear-gradient(180deg, #d4bdf8 0%, #cdb2f6 100%)',
-                color: '#000',
-                willChange: 'transform',
-              }}
-            >
-              {freelancerItems.map((item) => (
-                <div
-                  key={item}
-                  className="compare__item compare__item--right"
-                  style={{
-                    ...itemBase,
-                    justifyContent: 'flex-start',
-                    paddingLeft: '17.5rem',
-                    paddingRight: 0,
-                  }}
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Pinned wrap: side labels + center counter circle */}
-          <div
-            ref={counterWrapRef}
-            className="compare__counter-wrap"
-            style={{
-              display: 'flex',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              zIndex: 2,
-              pointerEvents: 'none',
-              fontWeight: 700,
-              fontSize: '2rem',
-              textTransform: 'uppercase',
-              color: 'var(--white)',
-            }}
-          >
-            <span style={{ paddingLeft: '3rem', color: '#000' }}>Shahd</span>
-
-            <div
-              className="compare__counter"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: '#121212',
-                borderRadius: '50%',
-                width: '25rem',
-                height: '25rem',
-                color: 'var(--gray)',
-                boxShadow: '0 0.5rem 2rem rgba(0, 0, 0, 0.2)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                fontSize: '2.5rem',
-              }}
-            >
-              <span
-                className="compare__counter-swap"
-                style={{
-                  opacity: 0.4,
-                  position: 'relative',
-                  transition: 'all 0.5s',
-                }}
-              >
-                {negativeHover ? 'BAGS' : 'IDEAS'}
-              </span>
-              <span
-                ref={counterNumRef}
-                id="counter"
-                style={{
-                  color: negativeHover ? 'var(--pink)' : 'var(--sky)',
-                  fontSize: '8rem',
-                  letterSpacing: '-0.03em',
-                  fontWeight: 500,
-                  transition: 'color 0.2s',
-                  lineHeight: 1,
-                }}
-              >
-                28
-              </span>
-            </div>
-
-            <span style={{ paddingRight: '3rem', color: '#000' }}>Freelancer</span>
-          </div>
-
+          <span className="ap-readout-wrap" style={{ color: INK, opacity: 0.75 }}>
+            <span ref={readoutRef}>01</span>
+            <span style={{ opacity: 0.45 }}>/{String(ROWS.length).padStart(2, '0')}</span>
+          </span>
+          <span style={{ textAlign: 'right', color: INK, opacity: 0.85 }}>With me</span>
+          <span />
+          <span>Instead of</span>
         </div>
 
+        {/* The ledger */}
+        <div ref={listRef} className="ap-list" style={{ position: 'relative' }}>
+
+          {/* Centre spine + travelling registration mark */}
+          <div
+            className="ap-spine"
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 'calc(4.5rem + ((100% - 12rem) / 2) + 3.75rem)',
+              width: '1px',
+              backgroundColor: 'rgba(244, 241, 234, 0.2)',
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            ref={markerRef}
+            className="ap-marker"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 'calc(4.5rem + ((100% - 12rem) / 2) + 3.75rem)',
+              width: '1.4rem',
+              height: '1.4rem',
+              transform: 'translateX(-50%)',
+              pointerEvents: 'none',
+            }}
+          >
+            <span style={{ position: 'absolute', top: '50%', left: 0, width: '100%', height: '1px', backgroundColor: 'rgba(244,241,234,0.75)' }} />
+            <span style={{ position: 'absolute', left: '50%', top: 0, height: '100%', width: '1px', backgroundColor: 'rgba(244,241,234,0.75)' }} />
+          </div>
+
+          {ROWS.map((row, i) => (
+            <div
+              key={row.claim}
+              className="ap-row"
+              style={{
+                position: 'relative',
+                display: 'grid',
+                gridTemplateColumns: '4.5rem minmax(0, 1fr) 7.5rem minmax(0, 1fr)',
+                alignItems: 'baseline',
+                padding: '2.1rem 0 1.7rem 0',
+              }}
+            >
+              <span
+                className="ap-idx"
+                style={{
+                  fontFamily: MONO,
+                  fontSize: '1.05rem',
+                  letterSpacing: '0.16em',
+                  color: INK,
+                  opacity: 0.3,
+                }}
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
+
+              <span
+                className="ap-claim"
+                style={{
+                  textAlign: 'right',
+                  fontSize: 'clamp(1.8rem, 2.9vw, 3.2rem)',
+                  fontWeight: 800,
+                  letterSpacing: '-0.03em',
+                  lineHeight: 1.02,
+                  textTransform: 'uppercase',
+                  color: INK,
+                  opacity: 0.38,
+                  willChange: 'transform, opacity',
+                }}
+              >
+                {row.claim}
+              </span>
+
+              <span />
+
+              <span
+                className="ap-instead"
+                style={{
+                  fontSize: 'clamp(1.5rem, 2.1vw, 2.2rem)',
+                  fontWeight: 400,
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1.15,
+                  textTransform: 'uppercase',
+                  color: INK,
+                  opacity: 0.42,
+                  willChange: 'transform, opacity',
+                }}
+              >
+                {row.instead}
+              </span>
+
+              {/* the rule grows in from the spine as the line activates */}
+              <span
+                className="ap-rule"
+                style={{
+                  position: 'absolute',
+                  left: '4.5rem',
+                  right: 0,
+                  bottom: 0,
+                  height: '1px',
+                  backgroundColor: INK,
+                  opacity: 0.08,
+                  pointerEvents: 'none',
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* The section lands on a statement instead of trailing off */}
+        <div
+          className="ap-close"
+          style={{
+            marginTop: '5rem',
+            paddingTop: '1.6rem',
+            borderTop: '1px solid rgba(244, 241, 234, 0.12)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            gap: '2rem',
+          }}
+        >
+          <span
+            style={{
+              fontSize: 'clamp(1.5rem, 2.1vw, 2.3rem)',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              color: INK,
+              lineHeight: 1.05,
+            }}
+          >
+            Every line above is in the agreement.
+          </span>
+          <span
+            style={{
+              fontFamily: MONO,
+              fontSize: '1.05rem',
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'rgba(244, 241, 234, 0.42)',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Not a pitch
+          </span>
+        </div>
       </div>
 
       <style>{`
         @media (max-width: 1023px) {
-          .compare__inner {
-            flex-direction: column !important;
-            gap: 0.5rem !important;
-          }
-          .compare__list {
-            width: 100% !important;
-            border-radius: 0.8rem !important;
-            padding: 3rem 2rem !important;
-            gap: 2.5rem !important;
-          }
-          .compare__item {
-            font-size: 1.9rem !important;
-            padding: 0 0 1rem 0 !important;
-            justify-content: flex-start !important;
-          }
-          .compare__counter-wrap {
+          /* the numeric readout and column labels are desktop affordances tied
+             to the spine — on mobile the kicker already frames the list */
+          .ap-heads {
             display: none !important;
+          }
+          .ap-kicker {
+            flex-direction: column !important;
+            gap: 0.35rem !important;
+          }
+          .ap-row {
+            grid-template-columns: 3rem minmax(0, 1fr) !important;
+            row-gap: 0.4rem !important;
+          }
+          .ap-row > .ap-claim {
+            text-align: left !important;
+            grid-column: 2 !important;
+          }
+          .ap-row > span:nth-child(3) {
+            display: none !important;
+          }
+          .ap-row > .ap-instead {
+            grid-column: 2 !important;
+            opacity: 0.3 !important;
+          }
+          .ap-rule {
+            left: 3rem !important;
+          }
+          .ap-spine,
+          .ap-marker {
+            display: none !important;
+          }
+          .ap-close {
+            flex-direction: column !important;
+            gap: 0.8rem !important;
+            margin-top: 3.5rem !important;
           }
         }
       `}</style>
