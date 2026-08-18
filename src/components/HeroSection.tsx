@@ -116,25 +116,21 @@ export default function HeroSection() {
         }}
       >
         <Image 
-          src="/images/woman2.webp" 
-          alt="Shahd Khairy — Full Stack Developer" 
-          width={800} 
-          height={1200}
+          src="/images/shahd-portrait.webp"
+          alt="Shahd Khairy — Full Stack Developer"
+          width={509}
+          height={839}
           style={{ height: '100%', width: 'auto', objectFit: 'contain' }}
           priority
         />
       </div>
 
-      {/* Hero Content */}
+      {/* Titles — deliberately BEHIND the portrait (zIndex 3 < 4) */}
       <div 
         className="center-wrap" 
         style={{ 
           position: 'relative', 
           zIndex: 3, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          justifyContent: 'space-between', 
-          flex: 1,
           width: '100%',
         }}
       >
@@ -241,45 +237,52 @@ export default function HeroSection() {
           </h1>
         </div>
 
-        {/* Bottom Metadata Bar */}
-        <div 
-          className="main-screen__bottom" 
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            color: 'var(--white)',
-            fontSize: '1.4rem',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            letterSpacing: '0.02em',
-            marginTop: 'auto',
-            paddingTop: '3rem',
-          }}
-        >
-          {/* Left: Origin */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span>CAIRO, EGYPT — ORIGIN</span>
-          </div>
+      </div>
 
-          {/* Center: Position (marquee) */}
-          <div className="main-screen__marquee marquee" style={{ maxWidth: '34rem', textTransform: 'none' }}>
-            <div className="marquee__track" style={{ fontSize: '1.8rem', lineHeight: 1.1 }}>
-              {[0, 1, 2, 3].map((i) => (
-                <span key={i} className="marquee__item">
-                  <span style={{ fontWeight: 600 }}>React &amp; Node.js</span>
-                  <span style={{ fontWeight: 400, opacity: 0.85 }}>for modern products</span>
-                  <span style={{ opacity: 0.4 }}>—</span>
-                </span>
-              ))}
-            </div>
-          </div>
+      {/* Bottom Metadata Bar — a direct child of the section, and stacked
+          ABOVE the portrait (zIndex 5 > 4) so the ticker stays readable
+          instead of being buried behind her shoulder. A nested z-index
+          could not do this: the titles wrapper sets zIndex 3, which opens a
+          stacking context its children can never escape. */}
+      <div 
+        className="center-wrap main-screen__bottom" 
+        style={{
+          position: 'relative',
+          zIndex: 5,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          color: 'var(--white)',
+          fontSize: '1.4rem',
+          textTransform: 'uppercase',
+          fontWeight: 600,
+          letterSpacing: '0.02em',
+          marginTop: 'auto',
+          paddingTop: '3rem',
+        }}
+      >
+        {/* Left: Origin */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <span>CAIRO, EGYPT — ORIGIN</span>
+        </div>
 
-          {/* Right: Tech stack */}
-          <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column' }}>
-            <span>MERN STACK</span>
-            <span style={{ opacity: 0.6 }}>THREE.JS & GSAP</span>
+        {/* Center: Position (marquee) */}
+        <div className="main-screen__marquee marquee" style={{ maxWidth: '34rem', textTransform: 'none' }}>
+          <div className="marquee__track" style={{ fontSize: '1.8rem', lineHeight: 1.1 }}>
+            {[0, 1, 2, 3].map((i) => (
+              <span key={i} className="marquee__item">
+                <span style={{ fontWeight: 600 }}>React &amp; Node.js</span>
+                <span style={{ fontWeight: 400, opacity: 0.85 }}>for modern products</span>
+                <span style={{ opacity: 0.4 }}>—</span>
+              </span>
+            ))}
           </div>
+        </div>
+
+        {/* Right: Tech stack */}
+        <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column' }}>
+          <span>MERN STACK</span>
+          <span style={{ opacity: 0.6 }}>THREE.JS & GSAP</span>
         </div>
       </div>
 
