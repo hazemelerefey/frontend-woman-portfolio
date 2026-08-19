@@ -8,14 +8,40 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+const PORTRAIT_SRC = '/images/shahd-portrait.webp';
+
+/** Distance from her alpha bounding-box centre to her centre of mass. */
+const OPTICAL_SHIFT = '-7.9%';
+
+/**
+ * Grade layers are clipped to the portrait's own alpha channel, so the light
+ * and the falloff land on her and never on the background behind her.
+ */
+const GRADE_LAYER: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  pointerEvents: 'none',
+  maskImage: `url(${PORTRAIT_SRC})`,
+  WebkitMaskImage: `url(${PORTRAIT_SRC})`,
+  maskSize: '100% 100%',
+  WebkitMaskSize: '100% 100%',
+  maskRepeat: 'no-repeat',
+  WebkitMaskRepeat: 'no-repeat',
+};
+
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
     if (!sectionRef.current) return;
 
-    // Subtle idle drift of the model
-    gsap.to('.main-screen__image', { x: -6, duration: 6 });
+    // Subtle idle float. It has to be symmetric around 0: a one-way tween
+    // would park the portrait permanently off-centre (the old `x: -6` did
+    // exactly that). Slow and small, just enough to stop her reading as a
+    // flat sticker pasted on the gradient.
+    gsap.fromTo('.main-screen__image',
+      { x: -4 },
+      { x: 4, duration: 9, ease: 'sine.inOut', repeat: -1, yoyo: true });
 
     // === Layered exit ===
     // Phase 1: titles split apart and FADE, nav + bottom bar fade — the
@@ -101,28 +127,84 @@ export default function HeroSection() {
         }}
       />
 
-      {/* Centered Woman Cutout Model — layered IN FRONT of the title */}
-      <div 
-        className="main-screen__image" 
+      {/* Portrait — layered IN FRONT of the titles, graded into the scene.
+
+          Centring: her alpha bounding box is centred in the asset, but the
+          alpha-weighted centroid sits 40px (7.9% of the frame) to the RIGHT
+          of it — the robe flares left while the body mass is right — so
+          box-centring made her read as offset. OPTICAL_SHIFT corrects to the
+          centre of mass. It is a percentage, not px, so it holds at every
+          viewport height as the image scales.
+
+          Structure: the outer element is full-width and centres its child
+          with flex instead of `left: 50% / translateX(-50%)`. That matters
+          because GSAP animates x/scale on this element — with a -50% base
+          transform the two fight over the same property. */}
+      <div
+        className="main-screen__image"
         style={{
           position: 'absolute',
           bottom: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
+          left: 0,
+          right: 0,
           height: '86vh',
-          width: 'auto',
+          display: 'flex',
+          justifyContent: 'center',
           zIndex: 4,
-          pointerEvents: 'none'
+          pointerEvents: 'none',
         }}
       >
-        <Image 
-          src="/images/shahd-portrait.webp"
-          alt="Shahd Khairy — Full Stack Developer"
-          width={509}
-          height={839}
-          style={{ height: '100%', width: 'auto', objectFit: 'contain' }}
-          priority
-        />
+        <div
+          className="hero-portrait"
+          style={{
+            position: 'relative',
+            height: '100%',
+            transform: `translateX(${OPTICAL_SHIFT})`,
+            // Keeps the blend layers below acting on the portrait only,
+            // instead of reaching through to the hero gradient.
+            isolation: 'isolate',
+          }}
+        >
+          <Image
+            src={PORTRAIT_SRC}
+            alt="Shahd Khairy — Full Stack Developer"
+            width={509}
+            height={839}
+            style={{
+              height: '100%',
+              width: 'auto',
+              objectFit: 'contain',
+              display: 'block',
+              // Studio-lit cutout pulled toward the scene's cooler, darker
+              // key, plus a real cast shadow (drop-shadow follows the alpha
+              // channel, so it traces her silhouette rather than a box).
+              filter:
+                'saturate(0.86) contrast(1.05) brightness(0.9) drop-shadow(0 1.6rem 3rem rgba(0, 0, 0, 0.5))',
+            }}
+            priority
+          />
+
+          {/* Scene light: violet from above, blue bouncing from below —
+              the same two hues as the hero gradient. soft-light keeps her
+              skin tones intact instead of staining them. */}
+          <div aria-hidden style={{ ...GRADE_LAYER, mixBlendMode: 'soft-light', opacity: 0.42,
+            background:
+              'linear-gradient(180deg, hsla(265, 95%, 70%, 0.9) 0%, hsla(265, 70%, 62%, 0.3) 14%, rgba(12, 12, 12, 0) 30%, rgba(12, 12, 12, 0) 68%, hsla(212, 95%, 60%, 0.35) 88%, hsla(212, 95%, 60%, 0.7) 100%)',
+          }} />
+
+          {/* Rim light down the lit edge, matching the glow above her. */}
+          <div aria-hidden style={{ ...GRADE_LAYER, mixBlendMode: 'screen', opacity: 0.2,
+            background:
+              'radial-gradient(ellipse 60% 30% at 62% 1%, hsla(275, 100%, 84%, 0.5) 0%, rgba(0, 0, 0, 0) 70%)',
+          }} />
+
+          {/* Atmospheric falloff: she dissolves into the base of the frame
+              instead of ending on the hard cut of the cutout. */}
+          <div aria-hidden style={{ ...GRADE_LAYER, opacity: 1,
+            background:
+              'linear-gradient(to top, #0c0c0c 0%, rgba(12, 12, 12, 0.88) 8%, rgba(12, 12, 12, 0.55) 20%, rgba(12, 12, 12, 0.22) 34%, rgba(12, 12, 12, 0) 50%)',
+          }} />
+        </div>
       </div>
 
       {/* Titles — deliberately BEHIND the portrait (zIndex 3 < 4) */}
